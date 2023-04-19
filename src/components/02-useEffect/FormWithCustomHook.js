@@ -1,38 +1,27 @@
-import React,{useEffect,useState}  from 'react'
+import React,{useEffect}  from 'react'
 import './effects.css'
-import Message from './Message';
-export default function SimpleForm() {
+import useForm from '../../hooks/useForm';
 
-    const [formState,setFormState]=useState({
+export default function FormWithCustomHook() {
+
+    const [formValues,handleInputChange]=useForm({
       name:'',
-      email:''
+      email:'',
+      password:'',
     });
 
   
-    const {name,email} = formState; 
+    const {name,email,password} = formValues; 
+
 
     useEffect(()=>{
-
-    },[]);
-
-    useEffect(()=>{
-        // console.log("hey!");
-    },[formState]);
-    useEffect(()=>{
-      // console.log("Se cambio el email!");
-    },[email]);
-
-    const handleInputChange=({target})=>{
+        console.log('Email Cambio')
+    },[email])
+ 
    
-      setFormState({
-        ...formState,
-        [target.name] :target.value,
-        });
-
-    }
   return (
     <div>
-     <h1 >UseEffect</h1>
+     <h1 >FormWithCustomHook</h1>
      <hr/>
 
      <div className='form-group'>
@@ -55,7 +44,17 @@ export default function SimpleForm() {
 
       
      </div>
-      {(name==='123') && <Message></Message>}
+     <div className='form-group'>
+     <label className=''>Password</label>
+
+      <input type="text" name="password" className='form-control'
+      placeholder='******' autoComplete='off'
+      value={password}
+      onChange={handleInputChange}/>
+
+      
+     </div>
+    
     </div>
   )
 }
