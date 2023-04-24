@@ -1,27 +1,63 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import './style.css';
 import { todoReducer } from './todoReducer';
+import TodoAdd from './TodoAdd';
+import TodoList from './TodoList';
+
 
 export default function TodoApp() {
+    const init = () => {
+        return JSON.parse(localStorage.getItem('todos')) || [];
+    }
+    const [todos, dispatch] = useReducer(todoReducer, [], init)
 
-    const initialState =[
-        {
-            id: new Date().getTime(),
-            descripcion:'Aprender React',
-            done:false
+    const handleDelete = (todoId) => {
+
+        const action = {
+            type: 'delete',
+            payload: todoId
         }
-    ]
-    const [state] = useReducer(todoReducer,initialState)
-  return (
-    <div>
-        <h1>TodoApp</h1>
-        <hr></hr>
-        <ul>
-            <li>Hola</li>
-            <li>Mundo</li>
-            <li>Hola de nuevo</li>
+        dispatch(action)
+    }
 
-        </ul>
-    </div>
-  )
-}
+    const handdleToggle = (todoId) => {
+        dispatch(
+            {
+                type: 'toggle',
+                payload: todoId
+            }
+        )
+    }
+    const handleAddTodo=(newTodo)=>{
+        
+        dispatch(newTodo)
+
+    }
+    useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(todos))
+    }, [todos]);
+ 
+  
+    
+    return (
+        <div>
+            <h1>TodoApp ({todos.length})</h1>
+            <hr></hr>
+            <div className='row'>
+                <div className='col-7'>
+
+                    {/* todoList,todos necesarios */}
+               <TodoList
+                
+               todos={todos}
+               handleDelete={handleDelete}
+               handdleToggle={handdleToggle}></TodoList>
+                </div>
+                <div className="col-5">
+                <TodoAdd handleAddTodo={handleAddTodo}></TodoAdd>
+                </div>
+            </div>
+
+        </div>
+    )
+    }
